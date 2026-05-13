@@ -364,10 +364,10 @@ void UserTask_OneKeyCmd(void)
                 }
                 break;
 
-                // 起飞到110cm
+                // 起飞到60cm
                 case 4:
                 {
-                    mission_step += OneKey_Takeoff(60);
+                    mission_step += OneKey_Takeoff(50);
                 }
                 break;
 
