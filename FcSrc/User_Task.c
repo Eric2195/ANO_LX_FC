@@ -284,10 +284,10 @@ void UserTask_OneKeyCmd(void)
 
     if (rc_in.fail_safe == 0)
     {
-        // CH6 中位：一键起飞
+        // CH6 中位：一键起飞（仅在未执行任务时允许，防止高位切低位途中误触发）
         if (rc_in.rc_ch.st_data.ch_[ch_6_aux2] > 1300 && rc_in.rc_ch.st_data.ch_[ch_6_aux2] < 1700)
         {
-            if (one_key_takeoff_f == 0)
+            if (one_key_takeoff_f == 0 && one_key_mission_f == 0)
             {
                 one_key_takeoff_f = OneKey_Takeoff(50);
             }
@@ -432,6 +432,11 @@ void UserTask_OneKeyCmd(void)
         }
         else
         {
+            // 紧急退出任务：立即清零速度输出，防止残留指令干扰降落
+            rt_tar.st_data.vel_x = 0;
+            rt_tar.st_data.vel_y = 0;
+            rt_tar.st_data.vel_z = 0;
+
             mission_step = 0;
             delay_cnt_ms = 0;
             hover_delay_ms = 0;
