@@ -16,7 +16,7 @@
 #define GS_VALID_BYTE_LENGTH 2
 
 /* 一帧数据接收完成标志（由 GS_DataAnl 置位，由 GS_GetData_Flag 清零） */
-static u8 g_GS_dataAnlScs_flag = RESET;
+static volatile u8 g_GS_dataAnlScs_flag = RESET;
 /* 接收缓存区，大小需 >= GS_VALID_BYTE_LENGTH */
 static u8 g_GS_val_data[20];
 

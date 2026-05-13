@@ -51,7 +51,7 @@ u8 All_Init()
 	return (1);
 }
 
-_rc_input_st rc_in;
+volatile _rc_input_st rc_in;
 void DrvRcInputInit(void)
 {
 	//任意初始化一个模式

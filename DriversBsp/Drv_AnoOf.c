@@ -1,6 +1,6 @@
 #include "Drv_AnoOf.h"
 
-_ano_of_st ano_of;
+volatile _ano_of_st ano_of;
 static uint8_t _datatemp[50];
 static float check_time_ms[3];
 void AnoOF_Check_State(float dT_s)

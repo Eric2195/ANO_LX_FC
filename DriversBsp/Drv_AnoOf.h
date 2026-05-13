@@ -49,7 +49,7 @@ typedef struct
 //飞控状态
 
 //==数据声明
-extern _ano_of_st ano_of;
+extern volatile _ano_of_st ano_of;
 //==函数声明
 //static
 static void AnoOF_DataAnl(uint8_t *data_buf, uint8_t num);
