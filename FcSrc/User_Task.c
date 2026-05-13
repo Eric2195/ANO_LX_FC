@@ -3,6 +3,7 @@
 #include "LX_FC_Fun.h"
 #include "Ano_Math.h"
 #include "ANO_LX.h"
+#include "LX_FC_State.h"
 
 //********************************pid参数**************************************//
 
@@ -284,19 +285,6 @@ void UserTask_OneKeyCmd(void)
 
     if (rc_in.fail_safe == 0)
     {
-        // CH6 中位：一键起飞（仅在未执行任务时允许，防止高位切低位途中误触发）
-        if (rc_in.rc_ch.st_data.ch_[ch_6_aux2] > 1300 && rc_in.rc_ch.st_data.ch_[ch_6_aux2] < 1700)
-        {
-            if (one_key_takeoff_f == 0 && one_key_mission_f == 0)
-            {
-                one_key_takeoff_f = OneKey_Takeoff(50);
-            }
-        }
-        else
-        {
-            one_key_takeoff_f = 0;
-        }
-
         // CH6 低位：一键降落
         if (rc_in.rc_ch.st_data.ch_[ch_6_aux2] > 800 && rc_in.rc_ch.st_data.ch_[ch_6_aux2] < 1200)
         {
