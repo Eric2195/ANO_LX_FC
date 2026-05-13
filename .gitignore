@@ -1,0 +1,49 @@
+# Keil MDK 编译生成的文件
+*.axf
+*.bin
+*.hex
+*.elf
+*.map
+*.lst
+*.o
+*.d
+*.crf
+*.dep
+*.bak
+*.lnp
+*.scvd
+*.sct
+*.htm
+*.log
+
+# Keil 本地用户配置文件
+*.uvoptx
+*.uvguix.*
+JLinkSettings.ini
+JLinkLog.txt
+
+# 编译生成的文件夹
+build/
+DebugConfig/
+RTE/
+Listings/
+Objects/
+*.obj/
+*.lst/
+*.dep/
+*.build/
+
+# 系统/工具文件
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+.claude/
+
+# 无关文件
+*.pdf
+*.txt
+clear编译完的东西.bat
+
+DriversMcu/
+
