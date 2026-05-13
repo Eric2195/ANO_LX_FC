@@ -93,42 +93,7 @@ static void Loop_50Hz(void) //20ms执行一次
 
 static void Loop_20Hz(void) //50ms执行一次
 {
-	//////////////////////////////////////////////////////////////////////
-	// 回传树莓派定位坐标到地面站串口，用于调试验证
-	u8 dbg_buf[32];
-	u8 idx = 0;
-	int x = now_x;
-	int y = now_y;
-
-	dbg_buf[idx++] = 'P';
-	dbg_buf[idx++] = 'X';
-	dbg_buf[idx++] = ':';
-
-	// now_x to string
-	if (x < 0) { dbg_buf[idx++] = '-'; x = -x; }
-	if (x >= 10000) dbg_buf[idx++] = '0' + (x / 10000) % 10;
-	if (x >= 1000)  dbg_buf[idx++] = '0' + (x / 1000) % 10;
-	if (x >= 100)   dbg_buf[idx++] = '0' + (x / 100) % 10;
-	if (x >= 10)    dbg_buf[idx++] = '0' + (x / 10) % 10;
-	dbg_buf[idx++] = '0' + (x % 10);
-
-	dbg_buf[idx++] = ' ';
-	dbg_buf[idx++] = 'Y';
-	dbg_buf[idx++] = ':';
-
-	// now_y to string
-	if (y < 0) { dbg_buf[idx++] = '-'; y = -y; }
-	if (y >= 10000) dbg_buf[idx++] = '0' + (y / 10000) % 10;
-	if (y >= 1000)  dbg_buf[idx++] = '0' + (y / 1000) % 10;
-	if (y >= 100)   dbg_buf[idx++] = '0' + (y / 100) % 10;
-	if (y >= 10)    dbg_buf[idx++] = '0' + (y / 10) % 10;
-	dbg_buf[idx++] = '0' + (y % 10);
-
-	dbg_buf[idx++] = '\r';
-	dbg_buf[idx++] = '\n';
-
-	DrvUart2SendBuf(dbg_buf, idx);
-	//////////////////////////////////////////////////////////////////////
+	// 调试验证串口已关闭，准备飞行
 }
 
 static void Loop_2Hz(void) //500ms执行一次
