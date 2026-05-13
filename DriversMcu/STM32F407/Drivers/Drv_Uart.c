@@ -83,8 +83,8 @@ void DrvUart1Init(u32 br_num)
 }
 
 u8 Tx1Buffer[256];
-volatile u8 Tx1Counter = 0;
-volatile u8 count1 = 0;
+u8 Tx1Counter = 0;
+u8 count1 = 0;
 void DrvUart1SendBuf(unsigned char *DataToSend, u8 data_num)
 {
     u8 i;
@@ -99,8 +99,8 @@ void DrvUart1SendBuf(unsigned char *DataToSend, u8 data_num)
     }
 }
 u8 U1RxDataTmp[100];
-volatile u8 U1RxInCnt = 0;
-volatile u8 U1RxoutCnt = 0;
+u8 U1RxInCnt = 0;
+u8 U1RxoutCnt = 0;
 void drvU1GetByte(u8 data)
 {
 	U1RxDataTmp[U1RxInCnt++] = data;
@@ -206,8 +206,8 @@ void DrvUart2Init(u32 br_num)
 }
 
 u8 TxBuffer[256];
-volatile u8 TxCounter = 0;
-volatile u8 count = 0;
+u8 TxCounter = 0;
+u8 count = 0;
 void DrvUart2SendBuf(unsigned char *DataToSend, u8 data_num)
 {
     u8 i;
@@ -222,8 +222,8 @@ void DrvUart2SendBuf(unsigned char *DataToSend, u8 data_num)
     }
 }
 u8 U2RxDataTmp[100];
-volatile u8 U2RxInCnt = 0;
-volatile u8 U2RxoutCnt = 0;
+u8 U2RxInCnt = 0;
+u8 U2RxoutCnt = 0;
 void drvU2GetByte(u8 data)
 {
 	U2RxDataTmp[U2RxInCnt++] = data;
@@ -329,8 +329,8 @@ void DrvUart3Init(u32 br_num)
 }
 
 u8 Tx3Buffer[256];
-volatile u8 Tx3Counter = 0;
-volatile u8 count3 = 0;
+u8 Tx3Counter = 0;
+u8 count3 = 0;
 void DrvUart3SendBuf(unsigned char *DataToSend, u8 data_num)
 {
     u8 i;
@@ -344,8 +344,8 @@ void DrvUart3SendBuf(unsigned char *DataToSend, u8 data_num)
     }
 }
 u8 U3RxDataTmp[100];
-volatile u8 U3RxInCnt = 0;
-volatile u8 U3RxoutCnt = 0;
+u8 U3RxInCnt = 0;
+u8 U3RxoutCnt = 0;
 void drvU3GetByte(u8 data)
 {
 	U3RxDataTmp[U3RxInCnt++] = data;
@@ -440,8 +440,8 @@ void DrvUart4Init(u32 br_num)
     USART_Cmd(UART4, ENABLE);
 }
 u8 Tx4Buffer[256];
-volatile u8 Tx4Counter = 0;
-volatile u8 count4 = 0;
+u8 Tx4Counter = 0;
+u8 count4 = 0;
 void DrvUart4SendBuf(unsigned char *DataToSend, u8 data_num)
 {
     u8 i;
@@ -456,8 +456,8 @@ void DrvUart4SendBuf(unsigned char *DataToSend, u8 data_num)
     }
 }
 u8 U4RxDataTmp[100];
-volatile u8 U4RxInCnt = 0;
-volatile u8 U4RxoutCnt = 0;
+u8 U4RxInCnt = 0;
+u8 U4RxoutCnt = 0;
 void drvU4GetByte(u8 data)
 {
 	U4RxDataTmp[U4RxInCnt++] = data;
@@ -555,8 +555,8 @@ void DrvUart5Init(u32 br_num)
     USART_Cmd(UART5, ENABLE);
 }
 u8 Tx5Buffer[256];
-volatile u8 Tx5Counter = 0;
-volatile u8 count5 = 0;
+u8 Tx5Counter = 0;
+u8 count5 = 0;
 void DrvUart5SendBuf(unsigned char *DataToSend, u8 data_num)
 {
     u8 i;
@@ -571,8 +571,8 @@ void DrvUart5SendBuf(unsigned char *DataToSend, u8 data_num)
     }
 }
 u8 U5RxDataTmp[100];
-volatile u8 U5RxInCnt = 0;
-volatile u8 U5RxoutCnt = 0;
+u8 U5RxInCnt = 0;
+u8 U5RxoutCnt = 0;
 void drvU5GetByte(u8 data)
 {
 	U5RxDataTmp[U5RxInCnt++] = data;

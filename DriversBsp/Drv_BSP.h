@@ -22,7 +22,7 @@ typedef struct
 } _rc_input_st;
 
 //==数据声明
-extern volatile _rc_input_st rc_in;
+extern _rc_input_st rc_in;
 
 u8 All_Init(void);
 
