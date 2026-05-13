@@ -54,6 +54,7 @@ static void Loop_50Hz(void) //20ms执行一次
 		now_y = (s16)((pi_data[2] << 8) | pi_data[3]);
 	}
 
+	/* 暂时注释掉地面站禁飞区接收，当前不接地面站，只测树莓派坐标
 	// 读取地面站禁飞区数据（逐个接收，每帧2字节：x,y）
 	static u8 gs_data[10];
 	static u8 barrier_idx = 0;
@@ -84,6 +85,7 @@ static void Loop_50Hz(void) //20ms执行一次
 			}
 		}
 	}
+	*/
 
 	UserTask_OneKeyCmd();
 	//////////////////////////////////////////////////////////////////////

@@ -66,6 +66,14 @@ int directions[4][2] = {{0,1},{1,0},{0,-1},{-1,0}};
 PathPoint path_points[MAX_PATH_POINTS];
 uint8_t path_len_routine = 0;
 
+// 简化测试路径：向 Y 方向走一格（50cm），然后返回原点
+// 如需测试 X 方向，改为 {50, 0}
+static const PathPoint test_path[] = {
+    {0, 50},
+    {0, 0}
+};
+#define TEST_PATH_LEN 2
+
 s16 now_x = 0;
 s16 now_y = 0;
 
@@ -375,13 +383,13 @@ void UserTask_OneKeyCmd(void)
                 }
                 break;
 
-                // 航点跟踪
+                // 航点跟踪（简化测试：走固定测试路径）
                 case 6:
                 {
-                    if (current_path_index < path_len_routine && path_len_routine > 0)
+                    if (current_path_index < TEST_PATH_LEN)
                     {
-                        s16 target_x = path_points[current_path_index].x;
-                        s16 target_y = path_points[current_path_index].y;
+                        s16 target_x = test_path[current_path_index].x;
+                        s16 target_y = test_path[current_path_index].y;
 
                         rt_tar.st_data.vel_x = x_move_pid(target_x - now_x);
                         rt_tar.st_data.vel_y = y_move_pid(target_y - now_y);
