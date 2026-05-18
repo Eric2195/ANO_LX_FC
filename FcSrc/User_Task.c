@@ -67,10 +67,10 @@ int directions[4][2] = {{0,1},{1,0},{0,-1},{-1,0}};
 PathPoint path_points[MAX_PATH_POINTS];
 uint8_t path_len_routine = 0;
 
-// 简化测试路径：向 Y 方向走一格（50cm），然后返回原点
-// 如需测试 X 方向，改为 {50, 0}
+// 简化测试路径：向 Y 方向走 1m，然后返回原点
+// 如需测试 X 方向，改为 {100, 0}
 static const PathPoint test_path[] = {
-    {0, 50},
+    {0, 100},
     {0, 0}
 };
 #define TEST_PATH_LEN 2

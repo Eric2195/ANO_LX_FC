@@ -71,6 +71,7 @@ void Pi_DataAnl(u8 com_data)
 			if (com_data == 0x46)
 			{
 				rx_state = 0;
+				DrvUart2SendBuf(g_Pi_val_data, PI_VALID_BYTE_LENGTH); /* 将雷达数据打印到串口2 */
 				g_Pi_dataAnlScs_flag = SET; /* 标记一帧接收完成 */
 			}
 			else
