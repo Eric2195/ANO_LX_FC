@@ -379,11 +379,28 @@ void UserTask_OneKeyCmd(void)
                         s16 target_x = test_path[current_path_index].x;
                         s16 target_y = test_path[current_path_index].y;
 
-                        rt_tar.st_data.vel_x = x_move_pid(target_x - now_x);
-                        rt_tar.st_data.vel_y = y_move_pid(target_y - now_y);
+                        s16 dx_u = target_x - now_x;
+                        s16 dy_u = target_y - now_y;
+
+                        // X方向：大偏差快速接近，小偏差PID，死区停止
+                        if (ABS(dx_u) > 10)
+                            rt_tar.st_data.vel_x = (dx_u > 0) ? -10 : 10;
+                        else if (ABS(dx_u) > 2)
+                            rt_tar.st_data.vel_x = x_move_pid(dx_u);
+                        else
+                            rt_tar.st_data.vel_x = 0;
+
+                        // Y方向：同上
+                        if (ABS(dy_u) > 10)
+                            rt_tar.st_data.vel_y = (dy_u > 0) ? -10 : 10;
+                        else if (ABS(dy_u) > 2)
+                            rt_tar.st_data.vel_y = y_move_pid(dy_u);
+                        else
+                            rt_tar.st_data.vel_y = 0;
+
                         rt_tar.st_data.vel_z = 0;
 
-                        if (ABS(now_x - target_x) < 15 && ABS(now_y - target_y) < 15)
+                        if (ABS(dx_u) < 15 && ABS(dy_u) < 15)
                         {
                             // 到达，悬停500ms
                             rt_tar.st_data.vel_x = 0;
