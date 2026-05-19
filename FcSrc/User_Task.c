@@ -329,7 +329,7 @@ void UserTask_OneKeyCmd(void)
                 // 切换程控模式
                 case 1:
                 {
-                    mission_step += LX_Change_Mode(2);
+                    mission_step += LX_Change_Mode(3);
                 }
                 break;
 
@@ -376,8 +376,9 @@ void UserTask_OneKeyCmd(void)
                 {
                     if (current_path_index < TEST_PATH_LEN)
                     {
-                        s16 target_x = test_path[current_path_index].x;
-                        s16 target_y = test_path[current_path_index].y;
+                        // 坐标系取反，与机体系同步（树莓派SLAM坐标系与飞控机体系方向相反）
+                        s16 target_x = -test_path[current_path_index].x;
+                        s16 target_y = -test_path[current_path_index].y;
 
                         s16 dx_u = target_x - now_x;
                         s16 dy_u = target_y - now_y;

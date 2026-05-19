@@ -10,6 +10,8 @@
 #include "Usart2.h"
 #include "Usart3_Pi.h"
 #include "Drv_Uart.h"
+#include "ANO_LX.h"
+#include <stdio.h>
 //////////////////////////////////////////////////////////////////////
 //用户程序调度器
 //////////////////////////////////////////////////////////////////////
@@ -104,7 +106,17 @@ static void Loop_50Hz(void) //20ms执行一次
 
 static void Loop_20Hz(void) //50ms执行一次
 {
-	// 调试验证串口已关闭，准备飞行
+	// 每0.5s串口打印一次坐标与速度，便于飞行中观察
+	static u8 print_cnt = 0;
+	if (++print_cnt >= 10)  // 50ms * 10 = 500ms
+	{
+		print_cnt = 0;
+		char buf[64];
+		int len = sprintf(buf, "X:%d Y:%d VX:%d VY:%d\r\n",
+						  now_x, now_y,
+						  rt_tar.st_data.vel_x, rt_tar.st_data.vel_y);
+		DrvUart2SendBuf((unsigned char *)buf, len);
+	}
 }
 
 static void Loop_2Hz(void) //500ms执行一次
