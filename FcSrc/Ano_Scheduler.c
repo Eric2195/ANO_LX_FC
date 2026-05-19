@@ -106,16 +106,25 @@ static void Loop_50Hz(void) //20ms执行一次
 
 static void Loop_20Hz(void) //50ms执行一次
 {
-	// 每0.5s串口打印一次坐标与速度，便于飞行中观察
+	// 每200ms发送一帧定长二进制调试数据，避免TxBuffer溢出和帧错位
 	static u8 print_cnt = 0;
-	if (++print_cnt >= 10)  // 50ms * 10 = 500ms
+	if (++print_cnt >= 4)  // 50ms * 4 = 200ms
 	{
 		print_cnt = 0;
-		char buf[64];
-		int len = sprintf(buf, "X:%d Y:%d VX:%d VY:%d\r\n",
-						  now_x, now_y,
-						  rt_tar.st_data.vel_x, rt_tar.st_data.vel_y);
-		DrvUart2SendBuf((unsigned char *)buf, len);
+		u8 buf[12];
+		buf[0] = 0xAA;                  // 帧头1
+		buf[1] = 0x55;                  // 帧头2
+		buf[2] = (u8)(now_x >> 8);     // now_x 高8位
+		buf[3] = (u8)(now_x);           // now_x 低8位
+		buf[4] = (u8)(now_y >> 8);     // now_y 高8位
+		buf[5] = (u8)(now_y);           // now_y 低8位
+		buf[6] = (u8)(rt_tar.st_data.vel_x >> 8);  // vel_x 高8位
+		buf[7] = (u8)(rt_tar.st_data.vel_x);       // vel_x 低8位
+		buf[8] = (u8)(rt_tar.st_data.vel_y >> 8);  // vel_y 高8位
+		buf[9] = (u8)(rt_tar.st_data.vel_y);       // vel_y 低8位
+		buf[10] = 0x0D;                 // 帧尾1
+		buf[11] = 0x0A;                 // 帧尾2
+		DrvUart2SendBuf(buf, 12);
 	}
 }
 
