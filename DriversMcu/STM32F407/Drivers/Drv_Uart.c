@@ -210,16 +210,19 @@ u8 TxCounter = 0;
 u8 count = 0;
 void DrvUart2SendBuf(unsigned char *DataToSend, u8 data_num)
 {
+    // 等待上一帧发送完成，防止 count 累加回绕导致帧错位
+    while (USART2->CR1 & USART_CR1_TXEIE);
+
     u8 i;
+    count = 0;
+    TxCounter = 0;
     for (i = 0; i < data_num; i++)
     {
-        TxBuffer[count++] = *(DataToSend + i);
+        TxBuffer[i] = *(DataToSend + i);
     }
+    count = data_num;
 
-    if (!(USART2->CR1 & USART_CR1_TXEIE))
-    {
-        USART_ITConfig(USART2, USART_IT_TXE, ENABLE); //打开发送中断
-    }
+    USART_ITConfig(USART2, USART_IT_TXE, ENABLE); //打开发送中断
 }
 u8 U2RxDataTmp[100];
 u8 U2RxInCnt = 0;
