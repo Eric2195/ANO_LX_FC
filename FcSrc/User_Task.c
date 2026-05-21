@@ -67,14 +67,6 @@ int directions[4][2] = {{0,1},{1,0},{0,-1},{-1,0}};
 PathPoint path_points[MAX_PATH_POINTS];
 uint8_t path_len_routine = 0;
 
-// 简化测试路径：向 Y 方向走 1m，然后返回原点
-// 如需测试 X 方向，改为 {100, 0}
-static const PathPoint test_path[] = {
-    {0, 100},
-    {0, 0}
-};
-#define TEST_PATH_LEN 2
-
 s16 now_x = 0;
 s16 now_y = 0;
 
@@ -277,11 +269,10 @@ void run_path_planner(void) {
 
 void UserTask_OneKeyCmd(void)
 {
-    static u8 one_key_takeoff_f = 1, one_key_land_f = 1, one_key_mission_f = 0;
+    static u8 one_key_land_f = 1, one_key_mission_f = 0;
     static u8 mission_step = 0;
     static u16 delay_cnt_ms = 0;
     static u16 hover_delay_ms = 0;
-    static u8 current_path_index = 0;
 
     if (rc_in.fail_safe == 0)
     {
@@ -305,7 +296,6 @@ void UserTask_OneKeyCmd(void)
             {
                 one_key_mission_f = 1;
                 mission_step = 1;
-                current_path_index = 0;
                 delay_cnt_ms = 0;
                 hover_delay_ms = 0;
             }
@@ -359,11 +349,11 @@ void UserTask_OneKeyCmd(void)
                 }
                 break;
 
-                // 悬停稳定3s
+                // 悬停稳定5s
                 case 5:
                 {
                     delay_cnt_ms += 20;
-                    if (delay_cnt_ms >= 3000)
+                    if (delay_cnt_ms >= 5000)
                     {
                         delay_cnt_ms = 0;
                         mission_step++;
@@ -371,62 +361,27 @@ void UserTask_OneKeyCmd(void)
                 }
                 break;
 
-                // 航点跟踪（简化测试：走固定测试路径）
+                // 平移200cm（方向0度，速度10cm/s）
                 case 6:
                 {
-                    if (current_path_index < TEST_PATH_LEN)
+                    mission_step += Horizontal_Move(200, 10, 0);
+                }
+                break;
+
+                // 等待平移完成（约20s）
+                case 7:
+                {
+                    delay_cnt_ms += 20;
+                    if (delay_cnt_ms >= 20000)
                     {
-                        // 坐标系取反，与机体系同步（树莓派SLAM坐标系与飞控机体系方向相反）
-                        s16 target_x = -test_path[current_path_index].x;
-                        s16 target_y = -test_path[current_path_index].y;
-
-                        s16 dx_u = target_x - now_x;
-                        s16 dy_u = target_y - now_y;
-
-                        // X方向：大偏差快速接近，小偏差PID，死区停止
-                        if (ABS(dx_u) > 10)
-                            rt_tar.st_data.vel_x = (dx_u > 0) ? -10 : 10;
-                        else if (ABS(dx_u) > 2)
-                            rt_tar.st_data.vel_x = x_move_pid(dx_u);
-                        else
-                            rt_tar.st_data.vel_x = 0;
-
-                        // Y方向：同上
-                        if (ABS(dy_u) > 10)
-                            rt_tar.st_data.vel_y = (dy_u > 0) ? -10 : 10;
-                        else if (ABS(dy_u) > 2)
-                            rt_tar.st_data.vel_y = y_move_pid(dy_u);
-                        else
-                            rt_tar.st_data.vel_y = 0;
-
-                        rt_tar.st_data.vel_z = 0;
-
-                        if (ABS(dx_u) < 15 && ABS(dy_u) < 15)
-                        {
-                            // 到达，悬停500ms
-                            rt_tar.st_data.vel_x = 0;
-                            rt_tar.st_data.vel_y = 0;
-                            hover_delay_ms += 20;
-                            if (hover_delay_ms >= 500)
-                            {
-                                hover_delay_ms = 0;
-                                current_path_index++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // 所有航点完成
-                        rt_tar.st_data.vel_x = 0;
-                        rt_tar.st_data.vel_y = 0;
-                        rt_tar.st_data.vel_z = 0;
+                        delay_cnt_ms = 0;
                         mission_step++;
                     }
                 }
                 break;
 
                 // 降落
-                case 7:
+                case 8:
                 {
                     mission_step += OneKey_Land();
                 }
@@ -446,7 +401,6 @@ void UserTask_OneKeyCmd(void)
             mission_step = 0;
             delay_cnt_ms = 0;
             hover_delay_ms = 0;
-            current_path_index = 0;
         }
     }
 }
