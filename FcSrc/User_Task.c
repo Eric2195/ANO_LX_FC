@@ -277,6 +277,9 @@ void UserTask_OneKeyCmd(void)
     static u8 mission_step = 0;
     static u16 delay_cnt_ms = 0;
     static u16 hover_delay_ms = 0;
+    static u8 wp_idx = 0;
+    static u8 move_sub_step = 0;
+    static u16 move_wait_ms = 0;
 
     if (rc_in.fail_safe == 0)
     {
@@ -384,10 +387,6 @@ void UserTask_OneKeyCmd(void)
                 // 航点跟踪：逐格移动 + 检测停留
                 case 7:
                 {
-                    static u8 wp_idx = 0;
-                    static u8 move_sub_step = 0;
-                    static u16 move_wait_ms = 0;
-
                     if (wp_idx < final_path_length - 1)
                     {
                         if (move_sub_step == 0)
@@ -464,6 +463,24 @@ void UserTask_OneKeyCmd(void)
             mission_step = 0;
             delay_cnt_ms = 0;
             hover_delay_ms = 0;
+            wp_idx = 0;
+            move_sub_step = 0;
+            move_wait_ms = 0;
         }
+    }
+    else
+    {
+        // 失控保护触发：强制清零所有输出，重置任务状态
+        rt_tar.st_data.vel_x = 0;
+        rt_tar.st_data.vel_y = 0;
+        rt_tar.st_data.vel_z = 0;
+
+        mission_step = 0;
+        one_key_mission_f = 0;
+        delay_cnt_ms = 0;
+        hover_delay_ms = 0;
+        wp_idx = 0;
+        move_sub_step = 0;
+        move_wait_ms = 0;
     }
 }
