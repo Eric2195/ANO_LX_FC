@@ -56,7 +56,11 @@ typedef struct {
 
 int grid[ROWS][COLS];
 
-Point barriers[BARRIER_COUNT];
+Point barriers[BARRIER_COUNT] = {
+    {3, 5},
+    {4, 5},
+    {5, 5}
+};
 Point accessible_cells[MAX_CELLS];
 int accessible_count = 0;
 Point final_path[MAX_PATH_LENGTH];
@@ -233,9 +237,9 @@ void nearest_neighbor_tsp(Point order[]) {
 void build_full_path(Point order[], int count) {
     int i;
     final_path_length = 0;
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < count - 1; i++) {
         Point start = order[i];
-        Point end = order[(i + 1) % count];
+        Point end = order[i + 1];
         Point seg[MAX_PATH_LENGTH];
         int seg_len = find_shortest_path(start, end, seg, MAX_PATH_LENGTH);
         int j;
@@ -349,11 +353,11 @@ void UserTask_OneKeyCmd(void)
                 }
                 break;
 
-                // 悬停稳定5s
+                // 悬停稳定3s
                 case 5:
                 {
                     delay_cnt_ms += 20;
-                    if (delay_cnt_ms >= 5000)
+                    if (delay_cnt_ms >= 3000)
                     {
                         delay_cnt_ms = 0;
                         mission_step++;
@@ -361,20 +365,79 @@ void UserTask_OneKeyCmd(void)
                 }
                 break;
 
-                // 平移200cm（方向0度，速度10cm/s）
+                // 执行路径规划（遍历所有可达格子）
                 case 6:
                 {
-                    mission_step += Horizontal_Move(200, 10, 0);
+                    run_path_planner();
+                    if (final_path_length > 0)
+                    {
+                        mission_step++;
+                    }
+                    else
+                    {
+                        // 无可达路径，直接降落
+                        mission_step = 8;
+                    }
                 }
                 break;
 
-                // 等待平移完成（约20s）
+                // 航点跟踪：逐格移动 + 检测停留
                 case 7:
                 {
-                    delay_cnt_ms += 20;
-                    if (delay_cnt_ms >= 20000)
+                    static u8 wp_idx = 0;
+                    static u8 move_sub_step = 0;
+                    static u16 move_wait_ms = 0;
+
+                    if (wp_idx < final_path_length - 1)
                     {
-                        delay_cnt_ms = 0;
+                        if (move_sub_step == 0)
+                        {
+                            // 计算当前点到下一个点的方向
+                            Point cur = final_path[wp_idx];
+                            Point next = final_path[wp_idx + 1];
+                            int dr = next.row - cur.row;
+                            int dc = next.col - cur.col;
+
+                            u16 angle = 0;
+                            if (dr == 1 && dc == 0)       angle = 0;     // 向前
+                            else if (dr == -1 && dc == 0) angle = 180;   // 向后
+                            else if (dr == 0 && dc == 1)  angle = 90;    // 向右
+                            else if (dr == 0 && dc == -1) angle = 270;   // 向左
+
+                            if (Horizontal_Move(GRID_SIZE_CM, 10, angle))
+                            {
+                                move_sub_step = 1;
+                                move_wait_ms = 0;
+                            }
+                        }
+                        else if (move_sub_step == 1)
+                        {
+                            // 等待移动完成（5s移动 + 2s余量）
+                            move_wait_ms += 20;
+                            if (move_wait_ms >= 7000)
+                            {
+                                move_wait_ms = 0;
+                                move_sub_step = 2;
+                            }
+                        }
+                        else if (move_sub_step == 2)
+                        {
+                            // 检测停留 1.5s
+                            move_wait_ms += 20;
+                            if (move_wait_ms >= 1500)
+                            {
+                                move_wait_ms = 0;
+                                move_sub_step = 0;
+                                wp_idx++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // 所有航点遍历完成
+                        wp_idx = 0;
+                        move_sub_step = 0;
+                        move_wait_ms = 0;
                         mission_step++;
                     }
                 }
