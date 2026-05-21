@@ -700,6 +700,11 @@
               <FileType>1</FileType>
               <FilePath>..\UserDriver\Usart3_Pi.c</FilePath>
             </File>
+            <File>
+              <FileName>README.md</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\UserDriver\README.md</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
